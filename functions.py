@@ -2,28 +2,44 @@ from math import pow
 
 
 def operations(op1, op2, operator):
-    if operator == "+":
-        return add(op1, op2)
-    if operator == "-":
-        return sub(op1, op2)
-    if operator == "*":
-        return mul(op1, op2)
-    if (operator == "/"):
-        return div(op1, op2)
-    if (operator == "^"):
-        return pow_override(op1, op2)
-    if (operator == "%"):
-        return mod(op1, op2)
-    if (operator == "$"):
-        return max(op1, op2)
-    if (operator == "&"):
-        return min(op1, op2)
-    if (operator == "@"):
-        return avg(op1, op2)
-    if (operator == "~"):
-        return neg(op2)
-    if (operator == "!"):
-        return add(op1)
+    return {
+        "+": add(op1, op2),
+        "-": sub(op1, op2),
+        "*": mul(op1, op2),
+        "/": div(op1, op2),
+        "^": pow_override(op1, op2),
+        "%": mod(op1, op2),
+        "$": max(op1, op2),
+        "&": min(op1, op2),
+        "@": avg(op1, op2),
+        "~": neg(op2),
+        "!": factorial(op1),
+    }[operator]
+
+
+# def operations(op1, op2, operator):
+#     if operator == "+":
+#         return add(op1, op2)
+#     if operator == "-":
+#         return sub(op1, op2)
+#     if operator == "*":
+#         return mul(op1, op2)
+#     if (operator == "/"):
+#         return div(op1, op2)
+#     if (operator == "^"):
+#         return pow_override(op1, op2)
+#     if (operator == "%"):
+#         return mod(op1, op2)
+#     if (operator == "$"):
+#         return max(op1, op2)
+#     if (operator == "&"):
+#         return min(op1, op2)
+#     if (operator == "@"):
+#         return avg(op1, op2)
+#     if (operator == "~"):
+#         return neg(op2)
+#     if (operator == "!"):
+#         return add(op1)
 
 
 def add(op1, op2):
@@ -51,14 +67,14 @@ def mod(op1, op2):
 
 
 def max(op1, op2):
-    if (op1 > op2):
+    if op1 > op2:
         return op1
     else:
         return op2
 
 
 def min(op1, op2):
-    if (op1 < op2):
+    if op1 < op2:
         return op1
     else:
         return op2
