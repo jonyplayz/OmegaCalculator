@@ -1,56 +1,62 @@
 from math import pow
 
 
-def operations(op1, op2, operator):
-    return {
-        "+": add(op1, op2),
-        "-": sub(op1, op2),
-        "*": mul(op1, op2),
-        "/": div(op1, op2),
-        "^": pow_override(op1, op2),
-        "%": mod(op1, op2),
-        "$": max(op1, op2),
-        "&": min(op1, op2),
-        "@": avg(op1, op2),
-        "~": neg(op2),
-        "!": factorial(op1),
-    }[operator]
-
-
 # def operations(op1, op2, operator):
-#     if operator == "+":
-#         return add(op1, op2)
-#     if operator == "-":
-#         return sub(op1, op2)
-#     if operator == "*":
-#         return mul(op1, op2)
-#     if (operator == "/"):
-#         return div(op1, op2)
-#     if (operator == "^"):
-#         return pow_override(op1, op2)
-#     if (operator == "%"):
-#         return mod(op1, op2)
-#     if (operator == "$"):
-#         return max(op1, op2)
-#     if (operator == "&"):
-#         return min(op1, op2)
-#     if (operator == "@"):
-#         return avg(op1, op2)
-#     if (operator == "~"):
-#         return neg(op2)
-#     if (operator == "!"):
-#         return add(op1)
+#     return {
+#         '+': add(op1, op2),
+#         '-': sub(op1, op2),
+#         '*': mul(op1, op2),
+#         '/': div(op1, op2),
+#         '^': pow_override(op1, op2),
+#         '%': mod(op1, op2),
+#         '$': max(op1, op2),
+#         '&': min(op1, op2),
+#         '@': avg(op1, op2),
+#         '~': neg(op2),
+#         '!': factorial(op1),
+#     }[operator]
+
+
+def operations(op1, op2, operator):
+    if operator == "+":
+        return add(op1, op2)
+    if operator == "-":
+        return sub(op1, op2)
+    if operator == "*":
+        return mul(op1, op2)
+    if operator == "/":
+        return div(op1, op2)
+    if operator == "^":
+        return pow_override(op1, op2)
+    if operator == "%":
+        return mod(op1, op2)
+    if operator == "$":
+        return max(op1, op2)
+    if operator == "&":
+        return min(op1, op2)
+    if operator == "@":
+        return avg(op1, op2)
+    if operator == "~":
+        return neg(op2)
+    if operator == "!":
+        return factorial(op1)
 
 
 def add(op1, op2):
+    op1 = int(op1)
+    op2 = int(op2)
     return op1 + op2
 
 
 def sub(op1, op2):
+    op1 = int(op1)
+    op2 = int(op2)
     return op1 - op2
 
 
 def mul(op1, op2):
+    op1 = int(op1)
+    op2 = int(op2)
     return op1 * op2
 
 
