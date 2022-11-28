@@ -1,4 +1,5 @@
 from math import pow
+from input_check import *
 
 
 # def operations(op1, op2, operator):
@@ -18,6 +19,9 @@ from math import pow
 
 
 def operations(op1, op2, operator):
+    list = check_input(op1, op2, operator)
+    op1 = list[0]
+    op2 = list[1]
     if operator == "+":
         return add(op1, op2)
     if operator == "-":
@@ -43,20 +47,14 @@ def operations(op1, op2, operator):
 
 
 def add(op1, op2):
-    op1 = int(op1)
-    op2 = int(op2)
     return op1 + op2
 
 
 def sub(op1, op2):
-    op1 = int(op1)
-    op2 = int(op2)
     return op1 - op2
 
 
 def mul(op1, op2):
-    op1 = int(op1)
-    op2 = int(op2)
     return op1 * op2
 
 
@@ -97,7 +95,7 @@ def neg(op1):
 def factorial(op1):
     num = 1
     sum = 1
-    while num != op1:
+    while num != op1+1:
         sum = sum * num
         num += 1
     return sum

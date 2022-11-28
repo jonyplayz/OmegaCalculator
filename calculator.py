@@ -1,4 +1,4 @@
-from the_brain import *
+from OmegaCalculator.the_brain import *
 
 def main():
 
