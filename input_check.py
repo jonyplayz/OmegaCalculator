@@ -33,12 +33,25 @@ def check_input(op1, op2, operator):
         if op2 not in operators and op2 != '':
             raise TypeError("can only have operators after a factorial operator. please restart the calculator")
         op1 = int(op1)
-    else:
+
+    elif operator == "!":
+        if decimal_counter1 == 1:
+            raise TypeError("cant do factorial with decimal number")
+
         for c in op1:
             if '.' < c < '0' or c < '.' or c > '9':
                 raise TypeError("only numbers and decimal dot is accepted. please restart the calculator")
+        if op2 not in operators and op2 != '':
+            raise TypeError("can only have operators after a factorial operator. please restart the calculator")
+        op1 = int(op1)
+
+
+    else:
+        for c in op1:
+            if ('.' < c < '0' or c < '.' or c > '9') and c != '-':
+                raise TypeError("only numbers and decimal dot is accepted. please restart the calculator")
         for c in op2:
-            if '.' < c < '0' or c < '.' or c > '9':
+            if ('.' < c < '0' or c < '.' or c > '9') and c != '-':
                 raise TypeError("only numbers and decimal dot is accepted. please restart the calculator")
         if decimal_counter1 == 1:
             op1 = float(op1)
