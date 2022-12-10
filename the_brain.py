@@ -13,10 +13,14 @@ def calculate(eq):
         op2_index = 1
         result = ""
         found_operator = False
-        minus_skip = False
+        skipping_counter_end = 0
+        skipping_counter_start = 0
+        holder = 0
+        print(eq + " this is eq in the beginning")
+
         for c in eq:
-            print(eq + " this is eq in the beginging")
-            if True:
+
+            if not op2_index < skipping_counter_end:
                 if result == "":
                     if c == '(':
                         result = sograim(eq, op2_index)
@@ -32,56 +36,108 @@ def calculate(eq):
                     elif c in operators:
                         found_operator = True
                         if current_operator == "":
-                            if c == '-' and (not minus_skip):
+                            if c == '-' and op1 == "":
                                 found_operator = False
-                                if not minus_skip:
 
-                                    #print("minus in first")
-
-
-                                    if op1 != "":
-                                        eq = minus_reduction(op2_index, eq, op1, op2, operators, current_operator, op1_index)
-                                        op2 = op2 + eq[op2_index]
-                                    else:
-                                        eq = minus_reduction(op2_index-1, eq, op1, op2, operators, current_operator, op1_index)
-                                        op1 = op1 + eq[0]
-                                    minus_skip = True
-                                    #op2_index += 1
+                                list = minus_reduction(0, eq, op1, op2, operators, current_operator,
+                                                       op1_index, skipping_counter_end)
+                                eq = list[0]
+                                skipping_counter_end = list[1]
+                                op1 = list[2]
+                                op2_index += 1
+                                skipping_counter_start = list[3]
+                                # op2 = op2 + eq[op2_index]
+                                # else:
+                                #     eq = minus_reduction(op2_index - 1, eq, op1, op2, operators, current_operator,
+                                #                          op1_index)
+                                #     op1 = op1 + eq[0]
+                                # minus_skip = True
+                            # op2_index += 1
 
                             else:
-                                current_operator = c
+                                if op2 == "" and c == '-':
+                                    list = minus_reduction(op2_index - 1, eq, op1, op2, operators, current_operator,
+                                                           op1_index, skipping_counter_end)
+                                    eq = list[0]
+                                    skipping_counter_end = list[1] + 1
+                                    skipping_counter_start = list[3]
+                                    current_operator = eq[op2_index - 1]
+                                else:
+                                    current_operator = c
+
                         else:
                             if op2 == "" and c == '-':
-                                #print("minus in second")
-                                eq = minus_reduction(op2_index, eq, op1, op2, operators, current_operator, op1_index)
+                                # print("minus in second")
+                                if current_operator == '!':
+                                    result = operations(op1, op2, current_operator)
+                                    while eq[op2_index] not in operators:
+                                        op2_index += 1
+                                    eq = eq[:op1_index] + str(result) + eq[op2_index:]
+                                else:
+                                    # op2_index += 1
+                                    print("op2_index in mid eq" + str(op2_index))
+                                    if holder == 0:
+                                        list = minus_reduction(op2_index, eq, op1, op2, operators, current_operator,
+                                                               op1_index, skipping_counter_end)
+                                        eq = list[0]
+                                        if eq[op2_index] == '-':
+                                            op2 = eq[op2_index]
 
-                            elif operators[c] > operators[current_operator]:
-                                current_operator = c
-                                op1 = op2
-                                op2 = ""
-                                op1_index = op2_index
-                                while eq[op2_index] not in operators:
-                                    op2_index += 1
-                                op2_index += 1
+                                    else:
+                                        list = minus_reduction(holder, eq, op1, op2, operators, current_operator,
+                                                               op1_index, skipping_counter_end)
+                                        eq = list[0]
+                                        op2 = eq[op2_index]
+                                        op2_index = holder
+                                    skipping_counter_end = list[1]
+                                    skipping_counter_start = list[3]
+
                             else:
-                                result = operations(op1, op2, current_operator)
-                                while eq[op2_index] not in operators:
-                                    op2_index += 1
-                                eq = eq[:op1_index] + str(result) + eq[op2_index:]
+                                if operators[c] > operators[current_operator]:
+
+                                    current_operator = c
+                                    op1 = op2
+                                    op2 = ""
+                                    #op2_index = skipping_counter_start
+                                    holder = skipping_counter_start
+
+                                    print("this is holder " + str(holder))
+                                    if eq[holder] == '-':
+                                        holder += 1
+                                    while eq[holder] not in operators:
+                                        holder += 1
+                                    holder += 1
+
+                                    if op1_index == 0 and skipping_counter_start != 0:
+                                        op1_index = holder - skipping_counter_start
+                                        op1_index = holder - op1_index
+                                    else:
+                                        op1_index = holder
+
+
+                                else:
+                                    result = operations(op1, op2, current_operator)
+                                    holder = skipping_counter_start
+                                    while eq[holder] != c:
+                                        holder += 1
+                                    eq = eq[:op1_index] + str(result) + eq[holder:]
 
                     else:
                         if not found_operator:
                             op2_index += 1
                             op1 = op1 + c
-                            minus_skip = False
                         else:
                             op2 = op2 + c
+            else:
+                print("skipped")
+                print(op2_index)
+                op2_index += 1
 
         if result == "" and found_operator:
             result = operations(op1, op2, current_operator)
-            if len(eq) - 1 != 0:
-                while op2_index != len(eq) - 1:
-                    op2_index += 1
+            # if len(eq) - 1 != 0:
+            #     while op2_index != len(eq) - 1:
+            #         op2_index += 1
             eq = eq[:op1_index] + str(result)
 
     return eq
@@ -114,12 +170,13 @@ def sograim(sograimStr, start):
     return result
 
 
-def minus_reduction(op2_index, eq, op1, op2, operators, current_operator, op1_index):
-    start_minus_index = op2_index
+def minus_reduction(start, eq, op1, op2, operators, current_operator, op1_index, skipping_counter_end):
+    start_minus_index = start
     holder_str = eq[start_minus_index:]
-    print(holder_str + " this is holder str and op1 "  + op1)
+    print(holder_str + " this is holder str and op1 " + op1)
     end_flag = False
-    end_minus_index = start_minus_index-1
+    end_minus_index = start_minus_index - 1
+    skipping_counter_end = 0
     for ch in holder_str:
         if ch != '-':
             end_flag = True
@@ -127,17 +184,24 @@ def minus_reduction(op2_index, eq, op1, op2, operators, current_operator, op1_in
             end_minus_index += 1
     print(str(end_minus_index) + " " + str(start_minus_index))
     if (end_minus_index - start_minus_index) % 2 != 0:
-        if op1 == "":
+        if op1 == "":  # if there is even number of minuses and its not an operator
             eq = eq[:start_minus_index] + eq[end_minus_index + 1:]
             op1 = op1 + eq[0]
             print(eq + " this is eq without operat")
         else:
-            eq = eq[:start_minus_index] + '+' + eq[end_minus_index+1:]
+            eq = eq[:start_minus_index] + '+' + eq[end_minus_index + 1:]
             print(eq + " this is eq with plus")
-         #print(eq + " soozgi" + str(start_minus_index) + " " + str(end_minus_index))
+        # print(eq + " soozgi" + str(start_minus_index) + " " + str(end_minus_index))
     else:
-        eq = eq[:start_minus_index] + '-' + eq[end_minus_index + 1:]
-        print(eq + " this is eq sith minus")
+        if op1 == "":  # if there is odd number of minuses and its not an operator
+            eq = eq[:start_minus_index + 1] + eq[end_minus_index + 1:]
+            op1 = op1 + eq[0]
+        else:
+            eq = eq[:start_minus_index] + '-' + eq[end_minus_index + 1:]
+            # skipping_counter = 1
+        # eq = eq[:start_minus_index] + '-' + eq[end_minus_index + 1:]
+        # print(eq + " this is eq sith minus")
+
         # print(eq + "Ezoogi")
     # end_flag = False
     # op2 = op2 + eq[start_minus_index]
@@ -149,4 +213,6 @@ def minus_reduction(op2_index, eq, op1, op2, operators, current_operator, op1_in
     #         op2 = op2 + ch
     # result = operations(op1, op2, current_operator)
     # eq = eq[:op1_index] + str(result) + eq[op2_index + 1:]
-    return eq
+    skipping_counter_end += end_minus_index
+    skipping_counter_start = start_minus_index
+    return [eq, skipping_counter_end, op1, skipping_counter_start]
