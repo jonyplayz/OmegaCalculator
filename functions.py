@@ -19,9 +19,49 @@ from input_check import *
 
 
 def operations(op1, op2, operator):
-    list = check_input(op1, op2, operator)
-    op1 = list[0]
-    op2 = list[1]
+    try:
+        list = check_input(op1, op2, operator)
+        op1 = list[0]
+        op2 = list[1]
+    # except equation_exception as error:
+    #     print(error)
+    #     return None
+    except plus_exception as error:
+        print(error)
+        return None
+    except minus_exception as error:
+        print(error)
+        return None
+    except mul_exception as error:
+        print(error)
+        return None
+    except div_exception as error:
+        print(error)
+        return None
+    except mod_exception as error:
+        print(error)
+        return None
+    except pow_exception as error:
+        print(error)
+        return None
+    except max_exception as error:
+        print(error)
+        return None
+    except min_exception as error:
+        print(error)
+        return None
+    except avg_exception as error:
+        print(error)
+        return None
+    except operand1_exception as error:
+        l = [error, "which is", "'" + op1 + "'"]
+        print(*l)
+        return None
+    except operand2_excpetion as error:
+        l = [error, "which is", "'" + op2 + "'"]
+        print(*l)
+        return None
+
     if operator == "+":
         return add(op1, op2)
     if operator == "-":
@@ -95,7 +135,7 @@ def neg(op1):
 def factorial(op1):
     num = 1
     sum = 1
-    while num != op1+1:
+    while num != op1 + 1:
         sum = sum * num
         num += 1
     return sum
