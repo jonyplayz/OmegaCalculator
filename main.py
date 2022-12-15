@@ -2,7 +2,10 @@ from calculator import *
 
 
 def main():
-    controller()
+    """
+    this is the main program that starts the calculator
+    """
+    start_calculator()
 
 
 if __name__ == '__main__':

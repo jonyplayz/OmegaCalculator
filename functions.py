@@ -2,30 +2,19 @@ from math import pow
 from input_check import *
 
 
-# def operations(op1, op2, operator):
-#     return {
-#         '+': add(op1, op2),
-#         '-': sub(op1, op2),
-#         '*': mul(op1, op2),
-#         '/': div(op1, op2),
-#         '^': pow_override(op1, op2),
-#         '%': mod(op1, op2),
-#         '$': max(op1, op2),
-#         '&': min(op1, op2),
-#         '@': avg(op1, op2),
-#         '~': neg(op2),
-#         '!': factorial(op1),
-#     }[operator]
-
-
 def operations(op1, op2, operator):
+    """
+    this program checks for errors in the operands and sends them to the correct operator function
+    :param op1: left operand
+    :param op2: right operand
+    :param operator: the operator
+
+    :return: returns None if there was an error, returns the result of the calculation
+    """
     try:
-        list = check_input(op1, op2, operator)
-        op1 = list[0]
-        op2 = list[1]
-    # except equation_exception as error:
-    #     print(error)
-    #     return None
+        list = check_input(op1, op2, operator)  # validates the left and right operands
+        op1 = list[0]  # puts the left operand after conversion to int/float
+        op2 = list[1]  # puts the right operand after conversion to int/float
     except plus_exception as error:
         print(error)
         return None
@@ -53,16 +42,19 @@ def operations(op1, op2, operator):
     except avg_exception as error:
         print(error)
         return None
+    except complex_exception as error:
+        print(error)
+        return None
     except operand1_exception as error:
-        l = [error, "which is", "'" + op1 + "'"]
+        l = [error, "which is", "'" + op1 + "'"]  # this list is used to print all the error at once
         print(*l)
         return None
     except operand2_excpetion as error:
-        l = [error, "which is", "'" + op2 + "'"]
+        l = [error, "which is", "'" + op2 + "'"]  # this list is used to print all the error at once
         print(*l)
         return None
 
-    if operator == "+":
+    if operator == "+":  # calls the operator function by the operator
         return add(op1, op2)
     if operator == "-":
         return sub(op1, op2)
@@ -84,6 +76,11 @@ def operations(op1, op2, operator):
         return neg(op2)
     if operator == "!":
         return factorial(op1)
+
+
+"""
+all of the functions bellow are operator functions
+"""
 
 
 def add(op1, op2):

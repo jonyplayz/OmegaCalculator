@@ -1,3 +1,8 @@
+"""
+this whole module contains the various custom exceptions that i created for each special exception
+"""
+
+
 class sograim_exception(Exception):
     def __init__(self, message="\nan error has occurred, it was caused by brackets"):
         self.message = message
@@ -83,6 +88,23 @@ class operand2_excpetion(Exception):
 
 
 class equation_exception(Exception):
-    def __init__(self, message="\nan error has occurred, it was caused by the final equation"):
+    def __init__(self, message="\nan error has occurred, it was caused by the whole equation not being valid"):
+        self.message = message
+        super().__init__(self.message)
+
+
+class complex_exception(Exception):
+    def __init__(self, message="\nan error has occurred, it was caused by a complex result from power a calculation"):
+        self.message = message
+        super().__init__(self.message)
+
+
+class emptyEq_exception(Exception):
+    def __init__(self, message="\nan error has occurred, it was caused by the equation being empty"):
+        self.message = message
+        super().__init__(self.message)
+
+class emptyBrackets_exception(Exception):
+    def __init__(self, message="\nan error has occurred, it was caused by empty brackets"):
         self.message = message
         super().__init__(self.message)
