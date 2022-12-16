@@ -3,7 +3,7 @@ this whole module contains the various custom exceptions that i created for each
 """
 
 
-class sograim_exception(Exception):
+class brackets_exception(Exception):
     def __init__(self, message="\nan error has occurred, it was caused by brackets"):
         self.message = message
         super().__init__(self.message)
@@ -81,7 +81,7 @@ class operand1_exception(Exception):
         super().__init__(self.message)
 
 
-class operand2_excpetion(Exception):
+class operand2_exception(Exception):
     def __init__(self, message="\nan error has occurred, it was caused by operand 2"):
         self.message = message
         super().__init__(self.message)
@@ -104,7 +104,14 @@ class emptyEq_exception(Exception):
         self.message = message
         super().__init__(self.message)
 
+
 class emptyBrackets_exception(Exception):
     def __init__(self, message="\nan error has occurred, it was caused by empty brackets"):
+        self.message = message
+        super().__init__(self.message)
+
+
+class digitSum_exception(Exception):
+    def __init__(self, message="\nan error has occurred, it was caused by digit sum"):
         self.message = message
         super().__init__(self.message)
