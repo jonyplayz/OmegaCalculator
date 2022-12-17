@@ -1,6 +1,6 @@
 from math import pow
-from OmegaCalculator.input_check import *
-from OmegaCalculator.printer import show_specific_index_of_exception
+from input_check import *
+from printer import show_specific_index_of_exception
 
 
 def operations(op1, op2, operator, eq):
@@ -53,11 +53,19 @@ def operations(op1, op2, operator, eq):
         print(error)
         show_specific_index_of_exception(eq, operator)
         return None
+    except neg_exception as error:
+        print(error)
+        show_specific_index_of_exception(eq, operator)
+        return None
     except complex_exception as error:
         print(error)
         show_specific_index_of_exception(eq, operator)
         return None
     except digitSum_exception as error:
+        print(error)
+        show_specific_index_of_exception(eq, operator)
+        return None
+    except divideByZero_exception as error:
         print(error)
         show_specific_index_of_exception(eq, operator)
         return None

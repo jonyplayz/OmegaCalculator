@@ -115,3 +115,9 @@ class digitSum_exception(Exception):
     def __init__(self, message="\nan error has occurred, it was caused by digit sum"):
         self.message = message
         super().__init__(self.message)
+
+
+class divideByZero_exception(Exception):
+    def __init__(self, message="\nan error has occurred, it was caused by dividing by zero"):
+        self.message = message
+        super().__init__(self.message)

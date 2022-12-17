@@ -1,5 +1,5 @@
-from OmegaCalculator.custom_exceptions import *
-from OmegaCalculator.config import *
+from custom_exceptions import *
+from config import *
 
 
 def check_input(op1, op2, operator):
@@ -31,7 +31,7 @@ def check_input(op1, op2, operator):
         if op2 == '':  # if we got the negative operator and the right operand is empty then its an operator exception
             raise_operator_exception(operator)
         for c in op2:  # this loop goes over the right operand and checks if any chars are not valid
-            if '.' < c < '0' or c < '.' or c > '9':
+            if ('.' < c < '0' or c < '.' or c > '9') and (c != '-' or (c == '-' and len(op2) == 1)):
                 raise operand2_exception()
         if op1 not in operators and op1 != '':  # if the left operand is not an operator and also not empty then raise an operator exception
             raise_operator_exception(operator)
@@ -76,6 +76,16 @@ def check_input(op1, op2, operator):
             if op1[0] == '-':
                 if decimal_counter2 > 0:
                     raise complex_exception()
+        if operator == '/':
+            not_zero = False
+            str_holder = op2
+            if op2[0] == '-' and len(op2) > 1:
+                str_holder = op2[1:]
+            for c in str_holder:
+                if c != '0':
+                    not_zero = True
+            if not not_zero:
+                raise divideByZero_exception()
 
         for c in op1:  # this loop goes over the left operand and checks if any chars are not valid
             if ('.' < c < '0' or c < '.' or c > '9') and c != '-':
@@ -112,7 +122,7 @@ def eq_check(eq, not_minus, has_content):
                 raise equation_exception()
     if not not_minus:  # if the equation is just minuses then raise an exception
         raise equation_exception()
-    if not_minus and not has_content:   # if the equation is only operators then raise an exception
+    if not_minus and not has_content:  # if the equation is only operators then raise an exception
         raise equation_exception()
 
 
@@ -141,3 +151,5 @@ def raise_operator_exception(operator):
         raise avg_exception()
     if operator == "#":
         raise digitSum_exception()
+    if operator == "~":
+        raise neg_exception()

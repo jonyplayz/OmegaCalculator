@@ -1,4 +1,4 @@
-from OmegaCalculator.calculator import *
+from calculator import *
 
 
 def main():

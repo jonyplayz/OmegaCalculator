@@ -1,6 +1,6 @@
-from OmegaCalculator.functions import *
-from OmegaCalculator.custom_exceptions import *
-from OmegaCalculator.config import *
+from functions import *
+from custom_exceptions import *
+from config import *
 
 
 def calculate(eq):
@@ -63,21 +63,27 @@ def calculate(eq):
                     found_operator = True
 
                 elif current_char in operators:  # checks if the current char is an operator
+                    # if (op2 == "-" or op2 == "") and (current_char == '~' and current_operator == '~'):
+                    #     result = None
+                    #     eq = "quit"
                     found_operator = True
                     if current_operator == "":  # if we didn't encounter an operator yet then true
-                        result_list = no_current_operator(current_char, op1, eq, op2_index, op2)
+                        result_list = no_current_operator(current_char, op1, eq, op2_index, op2, string_index)
                         op1 = result_list[0]
                         eq = result_list[1]
                         op2_index = result_list[2]
                         found_operator = result_list[3]
+                        current_operator = result_list[4]
+                        string_index = result_list[5]
 
                     else:
                         if op2 == "" and current_char == '-' and current_operator != '!' and current_operator != '#':
                             # if we encountered an operator already and its not an operator with one operand and we
                             # see a minus
 
-                            result_list = minus_reduction(op2_index, eq, op1)
+                            result_list = minus_reduction(op2_index, eq, op1, string_index)
                             eq = result_list[0]  # puts the returned equation into eq
+
                             if eq[op2_index] == '-':  # if the right operand starts with a minus then add it
                                 op2 = eq[op2_index]
                             compressed_minus = True
@@ -122,6 +128,7 @@ def calculate(eq):
                                         # brackets on the result because it turns into a number sign
                                         eq = eq[:op1_index] + '(' + str(result) + eq[op2_index] + ')' + eq[
                                                                                                         op2_index + 1:]
+
                                         # update the equation with the current result of the calculation
                                     else:
                                         eq = eq[:op1_index] + str(result) + eq[op2_index:]  # update the equation
@@ -195,9 +202,10 @@ def brackets_handler(brackets_str, opening_bracket_index):
     return result
 
 
-def minus_reduction(start, eq, op1):
+def minus_reduction(start, eq, op1, string_index):
     """
     this function redacts minuses accordingly
+    :param string_index: the current index in the equation
     :param start: index of the first minus
     :param eq: the equation
     :param op1: the left operand
@@ -231,27 +239,33 @@ def minus_reduction(start, eq, op1):
         else:  # if there is odd number of minuses and its an operator
             eq = eq[:start_minus_index] + '-' + eq[end_minus_index + 1:]  # update the equation with the reduction
             # and sign change
+    if op1 == "~":
+        op1 = ""
+        string_index -= 1
+    return [eq, op1, string_index]
 
-    return [eq, op1]
 
-
-def no_current_operator(current_char, op1, eq, op2_index, op2):
+def no_current_operator(current_char, op1, eq, op2_index, op2, string_index):
+    current_operator = ''
     found_operator = True
     if current_char == '-' and op1 == "":  # checks if we encounter a minus that is a number sign
         found_operator = False
         result_list = minus_reduction(0, eq,
-                                      op1)  # calls minus reduction program to redact all the minuses correctly
+                                      op1, string_index)  # calls minus reduction program to redact all the minuses correctly
         eq = result_list[0]  # put the returned equation into eq
         op1 = result_list[1]  # put the returned first char of the lef operand to op1
         op2_index += 1
+        string_index = result_list[2]
         compressed_minus = True
 
     elif op2 == "" and current_char == '-':  # checks if we encounter a minus that is an operator
-        result_list = minus_reduction(op2_index - 1, eq, op1)
+        result_list = minus_reduction(op2_index - 1, eq, op1, string_index)
         eq = result_list[0]  # put the returned equation into eq
+        string_index = result_list[2]
         current_operator = eq[
             op2_index - 1]  # puts the given operator after the minus redaction into current_operator
         compressed_minus = True
     else:  # if we didn't encounter a operator yet and its not a variation of minus then put it in current_operator
         current_operator = current_char
-    return [op1, eq, op2_index, found_operator]
+
+    return [op1, eq, op2_index, found_operator, current_operator, string_index]

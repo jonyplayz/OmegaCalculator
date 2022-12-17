@@ -1,8 +1,8 @@
-from OmegaCalculator.the_brain import *
-from OmegaCalculator.input_check import *
-from OmegaCalculator.custom_exceptions import equation_exception
-from OmegaCalculator.config import *
-from OmegaCalculator.printer import *
+from the_brain import *
+from input_check import *
+from custom_exceptions import equation_exception
+from config import *
+from printer import *
 
 
 def start_calculator():
@@ -59,6 +59,7 @@ def start_calculator():
                         error_flag = True
 
                 eq = eq.replace(" ", "")  # removing all the spaces in the equation
+                eq = eq.replace("\t", "")   # removing all the tabs in the equation
             if not error_flag:  # if we didn't encounter an error then calculate the equation
                 answer = calculate(eq)
                 if answer != "quit":  # if no errors were detected during the calculation then print the answer

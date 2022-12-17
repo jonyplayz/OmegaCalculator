@@ -17,5 +17,6 @@ def show_specific_index_of_exception(eq, operator):
     for c in eq:
         if c == operator:
             print('^')
+            break
         else:
             print(" ", end='')
