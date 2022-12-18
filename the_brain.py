@@ -118,15 +118,19 @@ def calculate(eq):
                                     eq = "quit"
                                 else:
                                     if eq[op2_index] == '-' and (compressed_minus or (
-                                            current_operator != '!')):  # the right operand is negative and we
+                                            (current_operator != '!' and current_operator != '#'))):  # the right operand is negative and we
                                         # compressed minuses or its not a left sided operator than increase op2_index
                                         op2_index += 1
-                                    while eq[op2_index] not in operators:  # increases op2_index so it will point to the
-                                        # end of the right operand
+                                    while eq[op2_index] not in operators and (current_operator != '#' and current_operator != '!'):
+                                        # increases op2_index so it will point to the end of the right operand
                                         op2_index += 1
                                     if current_operator == '~':  # if the current operator is '~' then we need to put
                                         # brackets on the result because it turns into a number sign
-                                        eq = eq[:op1_index] + '(' + str(result) + eq[op2_index] + ')' + eq[
+                                        if current_char in operators:
+                                            op2_index -= 1
+                                            eq = eq[:op1_index] + '(' + str(result) + ')' + eq[op2_index + 1:]
+                                        else:
+                                            eq = eq[:op1_index] + '(' + str(result) + eq[op2_index] + ')' + eq[
                                                                                                         op2_index + 1:]
 
                                         # update the equation with the current result of the calculation
@@ -160,7 +164,10 @@ def calculate(eq):
             elif eq[0] == '-' and (current_operator == "#" or current_operator == "~"):
                 eq = eq[:op1_index + 1] + str(result)  # update the equation with the current calculation
             else:
-                eq = eq[:op1_index] + str(result)  # update the equation with the current calculation
+                if eq[op1_index] == '-' and op1_index != 0 and str(result)[0] != '-':
+                    eq = eq[:op1_index+1] + str(result)
+                else:
+                    eq = eq[:op1_index] + str(result)  # update the equation with the current calculation
 
     return eq
 
@@ -251,7 +258,8 @@ def no_current_operator(current_char, op1, eq, op2_index, op2, string_index):
     if current_char == '-' and op1 == "":  # checks if we encounter a minus that is a number sign
         found_operator = False
         result_list = minus_reduction(0, eq,
-                                      op1, string_index)  # calls minus reduction program to redact all the minuses correctly
+                                      op1,
+                                      string_index)  # calls minus reduction program to redact all the minuses correctly
         eq = result_list[0]  # put the returned equation into eq
         op1 = result_list[1]  # put the returned first char of the lef operand to op1
         op2_index += 1

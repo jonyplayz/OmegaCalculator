@@ -71,7 +71,6 @@ test methods starts bellow
 """
 
 
-@pytest.mark.skip
 def test_simple_syntax_error(capsys, monkeypatch):
     eq_list = ["2+*2", "2^*3", "2$/4", "2~-~4"]
     answers_list = ["mul\nthe error was here:\n2+*2\n  ^\n", "pow\nthe error was here:\n2^*3\n ^\n",
@@ -86,7 +85,6 @@ def test_simple_syntax_error(capsys, monkeypatch):
         answer_list_index += 1
 
 
-@pytest.mark.skip
 def test_jibrish_equation_error(capsys, monkeypatch):
     jibrish_equation = "kjhsdhjhsgkdjh"
     monkeypatch.setattr('builtins.input', lambda: jibrish_equation)
@@ -95,7 +93,6 @@ def test_jibrish_equation_error(capsys, monkeypatch):
     assert stdout == '\nan error has occurred, it was caused by the whole equation not being valid\n'
 
 
-@pytest.mark.skip
 def test_empty_equation_error(capsys, monkeypatch):
     empty_equation = ""
     monkeypatch.setattr('builtins.input', lambda: empty_equation)
@@ -104,7 +101,6 @@ def test_empty_equation_error(capsys, monkeypatch):
     assert stdout == '\nan error has occurred, it was caused by the equation being empty\n'
 
 
-@pytest.mark.skip
 def test_white_spaces_equation_error(capsys, monkeypatch):
     white_spaces_list = [" ", "\t", "\v", "\n", "\r", "\f", "   "]
     answers_list = ["the whole equation not being valid\n", "the whole equation not being valid\n",
@@ -118,4 +114,62 @@ def test_white_spaces_equation_error(capsys, monkeypatch):
         test_start_calculator()
         stdout, stderr = capsys.readouterr()
         assert stdout == '\nan error has occurred, it was caused by ' + answers_list[answer_list_index]
+        answer_list_index += 1
+
+
+def test_simple_equation(capsys, monkeypatch):
+    equation_list = ["2+2", "9-3", "5*-2", "4/0.5", "16^0.5", "12%2", "8$9", "8&9", "10@2", "-~4", "5!", "-123#"]
+    answers_list = ["4\n", "6\n", "-10\n", "8.0\n", "4.0\n", "0\n", "9\n", "8\n", "6.0\n", "4\n", "120\n", "-6\n"]
+    answer_list_index = 0
+    for strings in equation_list:
+        monkeypatch.setattr('builtins.input', lambda: strings)
+        test_start_calculator()
+        stdout, stderr = capsys.readouterr()
+        assert stdout == 'the answer is: ' + answers_list[answer_list_index]
+        answer_list_index += 1
+
+
+def test_complex_equation(capsys, monkeypatch):
+    equation_list = ["120#+-54*33-6!/(4^3)-6",
+                     "69##!#!##-437/(15-6)^3",
+                     "2^(~3--12)+15$6&44&3",
+                     "2---3! + 4!-~3 - 09 * 0.001 * 10 ^ 3 * (2-1)",
+                     "5!# * 3 @ 1 + -1 ^ 4 + (2) * (4 ^ -~-2.00)",
+                     "60^2--(---3000)/5^2#!",
+                     "158#+---3^43#---(123*8/6!)",
+                     "4+52#!^2*4&5$8---1000",
+                     "3*5%2+65/(-47#$-2+6)",
+                     "-36#*(47#-554#)####+12",
+                     "(654*4)$99^3/5!#!#-~23",
+                     "(4+6)*756#--8^4-(555#)",
+                     "~17$30*3.3&5.5-(12#-2!)",
+                     "(5%2+300@10)-    3^2/9+55&3",
+                     "30*0.1$2--~5+(10!*2-30)%5-(30/5+1)",
+                     "6!-3^3*2+  (~2/~1+2#)*1-3%2+1",
+                     "100&99/33+1.1^2-(3!+~1)%2+7*7",
+                     "5$(4*-123#^2 /12.7@5.3)-100%(12*2.5)"]
+    answers_list = ["-1796.25\n",
+                    "8.400548696844993\n",
+                    "515.0\n",
+                    "13.999999999999998\n",
+                    "7.125\n",
+                    "3480.0\n",
+                    "-2174.366666666667\n",
+                    "203211804.0\n",
+                    "19.25\n",
+                    "39\n",
+                    "2983746839.0\n",
+                    "4261.0\n",
+                    "98.0\n",
+                    "158.0\n",
+                    "48.0\n",
+                    "670.0\n",
+                    "52.21\n",
+                    "6.0\n"]
+    answer_list_index = 0
+    for strings in equation_list:
+        monkeypatch.setattr('builtins.input', lambda: strings)
+        test_start_calculator()
+        stdout, stderr = capsys.readouterr()
+        assert stdout == 'the answer is: ' + answers_list[answer_list_index]
         answer_list_index += 1
