@@ -58,6 +58,20 @@ def start_calculator():
                         print(error)
                         error_flag = True
 
+                opening_brackets_counter = 0
+                closing_brackets_counter = 0
+                for c in eq:
+                    if c == '(':
+                        opening_brackets_counter += 1
+                    if c == ')':
+                        closing_brackets_counter += 1
+                try:
+                    if opening_brackets_counter != closing_brackets_counter:
+                        raise brackets_exception()
+                except brackets_exception as error:
+                    print(error)
+                    error_flag = True
+
                 eq = eq.replace(" ", "")  # removing all the spaces in the equation
                 eq = eq.replace("\t", "")   # removing all the tabs in the equation
             if not error_flag:  # if we didn't encounter an error then calculate the equation

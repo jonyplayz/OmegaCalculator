@@ -31,7 +31,7 @@ def check_input(op1, op2, operator):
         if op2 == '':  # if we got the negative operator and the right operand is empty then its an operator exception
             raise_operator_exception(operator)
         for c in op2:  # this loop goes over the right operand and checks if any chars are not valid
-            if ('.' < c < '0' or c < '.' or c > '9') and (c != '-' or (c == '-' and len(op2) == 1)):
+            if ('.' < c < '0' or c < '.' or c > '9') and (c != '-' or (c == '-' and len(op2) == 1) and c != 'e'):
                 raise operand2_exception()
         if op1 not in operators and op1 != '':  # if the left operand is not an operator and also not empty then raise an operator exception
             raise_operator_exception(operator)
@@ -42,12 +42,12 @@ def check_input(op1, op2, operator):
     elif operator == "!":
         if decimal_counter1 == 1:  # if there is a decimal dot raise an exception about the left operand
             raise operand1_exception()
-        if op1[0] == '-':  # if the left operand is negeitve then raise an exception
+        if op1[0] == '-':  # if the left operand is negative then raise an exception
             raise operand1_exception()
         if op1 == '':  # if the left operand is empty then raise an operator exception
             raise_operator_exception(operator)
         for c in op1:  # this loop goes over the left operand and checks if any chars are not valid
-            if '.' < c < '0' or c < '.' or c > '9':
+            if ('.' < c < '0' or c < '.' or c > '9')  and c != 'e':
                 raise operand1_exception()
         if op2 not in operators and op2 != '':  # if the right operand is not an operator and also not empty then raise an operator exception
             raise_operator_exception(operator)
@@ -57,7 +57,7 @@ def check_input(op1, op2, operator):
         if op1 == '':  # if the left operand is empty then raise an operator exception
             raise_operator_exception(operator)
         for c in op1:  # this loop goes over the left operand and checks if any chars are not valid
-            if '.' < c < '0' or c < '.' or c > '9':
+            if ('.' < c < '0' or c < '.' or c > '9') and c != 'e':
                 raise operand1_exception()
         if op2 not in operators and op2 != '':  # if the right operand is not an operator and also not empty then raise an operator exception
             raise_operator_exception(operator)
@@ -88,10 +88,10 @@ def check_input(op1, op2, operator):
                 raise divideByZero_exception()
 
         for c in op1:  # this loop goes over the left operand and checks if any chars are not valid
-            if ('.' < c < '0' or c < '.' or c > '9') and c != '-':
+            if ('.' < c < '0' or c < '.' or c > '9') and c != '-' and c != 'e':
                 raise operand1_exception()
         for c in op2:  # this loop goes over the right operand and checks if any chars are not valid
-            if ('.' < c < '0' or c < '.' or c > '9') and c != '-':
+            if ('.' < c < '0' or c < '.' or c > '9') and c != '-' and c != 'e':
                 raise operand2_exception()
         if decimal_counter1 == 1:  # if there is a decimal dot then convert to float, else to int
             op1 = float(op1)
@@ -118,7 +118,7 @@ def eq_check(eq, not_minus, has_content):
         raise emptyEq_exception()
     else:
         for c in eq:  # this loop goes over the equation and checks if any chars are not valid
-            if ('.' < c < '0' or c < '.' or c > '9') and c not in operators:
+            if ('.' < c < '0' or c < '.' or c > '9') and c not in operators and c != '(' and c != ')':
                 raise equation_exception()
     if not not_minus:  # if the equation is just minuses then raise an exception
         raise equation_exception()

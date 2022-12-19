@@ -42,6 +42,16 @@ def calculate(eq):
             current_char = eq[string_index]  # gets the current char from the equation
             if result == "":  # if we didn't calculate anything already then continue
                 if current_char == '(':
+                    stop_counting_opening_brackets = False
+                    for c in eq[op2_index]:
+                        if c != '(':
+                            stop_counting_opening_brackets = True
+                        if c == '(' and not stop_counting_opening_brackets:
+                            op2_index+=1
+                    if op1 == '-':
+                        op2_index-=1
+                    if current_operator != '':
+                        op2_index-=1
                     try:
                         result = brackets_handler(eq,
                                                   op2_index)  # calling a program that calculates the equation in the
@@ -49,10 +59,13 @@ def calculate(eq):
                     except emptyBrackets_exception as error:
                         print(error)
                         result = "quit"
-
+                    except brackets_exception as error:
+                        print(error)
+                        result = "quit"
                     if result == "quit":  # if result is "quit" then we encountered an error and the calculation
                         # should stop
                         return result
+
                     op1_index = op2_index  # op1_index getting updated with the correct index
                     while eq[op2_index] != ')':  # increasing op2_index until we reach the closing brackets
                         op2_index += 1
@@ -67,76 +80,82 @@ def calculate(eq):
                     #     result = None
                     #     eq = "quit"
                     found_operator = True
-                    if current_operator == "":  # if we didn't encounter an operator yet then true
-                        result_list = no_current_operator(current_char, op1, eq, op2_index, op2, string_index)
-                        op1 = result_list[0]
-                        eq = result_list[1]
-                        op2_index = result_list[2]
-                        found_operator = result_list[3]
-                        current_operator = result_list[4]
-                        string_index = result_list[5]
+                    if len(op1) > 0:
+                        if op1[len(op1)-1] == 'e' and current_char == '+':
+                            op1 += current_char
+                            found_operator = False
+                    if found_operator:
+                        if current_operator == "":  # if we didn't encounter an operator yet then true
+                            result_list = no_current_operator(current_char, op1, eq, op2_index, op2, string_index, compressed_minus)
+                            op1 = result_list[0]
+                            eq = result_list[1]
+                            op2_index = result_list[2]
+                            found_operator = result_list[3]
+                            current_operator = result_list[4]
+                            string_index = result_list[5]
+                            compressed_minus = result_list[6]
 
-                    else:
-                        if op2 == "" and current_char == '-' and current_operator != '!' and current_operator != '#':
-                            # if we encountered an operator already and its not an operator with one operand and we
-                            # see a minus
+                        else:
+                            if op2 == "" and current_char == '-' and current_operator != '!' and current_operator != '#':
+                                # if we encountered an operator already and its not an operator with one operand and we
+                                # see a minus
 
-                            result_list = minus_reduction(op2_index, eq, op1, string_index)
-                            eq = result_list[0]  # puts the returned equation into eq
+                                result_list = minus_reduction(op2_index, eq, op1, string_index)
+                                eq = result_list[0]  # puts the returned equation into eq
 
-                            if eq[op2_index] == '-':  # if the right operand starts with a minus then add it
-                                op2 = eq[op2_index]
-                            compressed_minus = True
+                                if eq[op2_index] == '-':  # if the right operand starts with a minus then add it
+                                    op2 = eq[op2_index]
+                                compressed_minus = True
 
-                        else:  # if we encounter another operator after already seeing one before
-                            if operators[current_char] > operators[current_operator]:  # if the operator we just
-                                # encountered is stronger than the operator we saw before
+                            else:  # if we encounter another operator after already seeing one before
+                                if operators[current_char] > operators[current_operator]:  # if the operator we just
+                                    # encountered is stronger than the operator we saw before
 
-                                current_operator = current_char  # current_operator gets the stronger operator
-                                op1 = op2  # the left operand gets the right operand
-                                op2 = ""  # resetting the right operand
-                                op1_index = op2_index  # updating the index of the start of the left operand
-                                if eq[op2_index] == '-':  # if the first char of the new left operand is minus then
-                                    # increase op2_index
-                                    op2_index += 1
-                                while eq[op2_index] not in operators:  # this loop gets op2_index to point to the
-                                    # start of the right operand
-                                    op2_index += 1
-                                op2_index += 1
-
-                            else:  # if the operator we encountered now is weaker than current_operator
-                                if current_operator == "#":  # checks if the current operator is digitSum, if true
-                                    # then we need to remove the minus from the left operand and increase the
-                                    # index of the start of the left operand
-                                    if op1[0] == "-":
-                                        op1 = op1.replace("-", "")
-                                        op1_index += 1
-                                result = operations(op1, op2, current_operator, eq)  # calculates with the current
-                                # left operand, right operand and current_operator
-                                if result is None:  # if we got None then there has been an error and the calculation
-                                    # of the equation should stop
-                                    eq = "quit"
-                                else:
-                                    if eq[op2_index] == '-' and (compressed_minus or (
-                                            (current_operator != '!' and current_operator != '#'))):  # the right operand is negative and we
-                                        # compressed minuses or its not a left sided operator than increase op2_index
+                                    current_operator = current_char  # current_operator gets the stronger operator
+                                    op1 = op2  # the left operand gets the right operand
+                                    op2 = ""  # resetting the right operand
+                                    op1_index = op2_index  # updating the index of the start of the left operand
+                                    if eq[op2_index] == '-':  # if the first char of the new left operand is minus then
+                                        # increase op2_index
                                         op2_index += 1
-                                    while eq[op2_index] not in operators and (current_operator != '#' and current_operator != '!'):
-                                        # increases op2_index so it will point to the end of the right operand
+                                    while eq[op2_index] not in operators:  # this loop gets op2_index to point to the
+                                        # start of the right operand
                                         op2_index += 1
-                                    if current_operator == '~':  # if the current operator is '~' then we need to put
-                                        # brackets on the result because it turns into a number sign
-                                        if current_char in operators:
-                                            op2_index -= 1
-                                            eq = eq[:op1_index] + '(' + str(result) + ')' + eq[op2_index + 1:]
-                                        else:
-                                            eq = eq[:op1_index] + '(' + str(result) + eq[op2_index] + ')' + eq[
-                                                                                                        op2_index + 1:]
+                                    op2_index += 1
 
-                                        # update the equation with the current result of the calculation
+                                else:  # if the operator we encountered now is weaker than current_operator
+                                    if current_operator == "#":  # checks if the current operator is digitSum, if true
+                                        # then we need to remove the minus from the left operand and increase the
+                                        # index of the start of the left operand
+                                        if op1[0] == "-":
+                                            op1 = op1.replace("-", "")
+                                            op1_index += 1
+                                    result = operations(op1, op2, current_operator, eq)  # calculates with the current
+                                    # left operand, right operand and current_operator
+                                    if result is None:  # if we got None then there has been an error and the calculation
+                                        # of the equation should stop
+                                        eq = "quit"
                                     else:
-                                        eq = eq[:op1_index] + str(result) + eq[op2_index:]  # update the equation
-                                        # with the current result of the calculation
+                                        if eq[op2_index] == '-' and (compressed_minus or (
+                                                (current_operator != '!' and current_operator != '#'))):  # the right operand is negative and we
+                                            # compressed minuses or its not a left sided operator than increase op2_index
+                                            op2_index += 1
+                                        while eq[op2_index] not in operators and (current_operator != '#' and current_operator != '!'):
+                                            # increases op2_index so it will point to the end of the right operand
+                                            op2_index += 1
+                                        if current_operator == '~':  # if the current operator is '~' then we need to put
+                                            # brackets on the result because it turns into a number sign
+                                            if current_char in operators:
+                                                op2_index -= 1
+                                                eq = eq[:op1_index] + '(' + str(result) + ')' + eq[op2_index + 1:]
+                                            else:
+                                                eq = eq[:op1_index] + '(' + str(result) + eq[op2_index] + ')' + eq[
+                                                                                                            op2_index + 1:]
+
+                                            # update the equation with the current result of the calculation
+                                        else:
+                                            eq = eq[:op1_index] + str(result) + eq[op2_index:]  # update the equation
+                                            # with the current result of the calculation
 
                 else:  # if we don't see an operator
                     if not found_operator:  # if we didn't found an operator yet then add the char to the left operand
@@ -145,7 +164,6 @@ def calculate(eq):
                         op1 = op1 + current_char
                     else:  # if we found an operator then add the char to the right operand
                         op2 = op2 + current_char
-
             string_index += 1  # increases the string index
             eq_len = len(eq)  # updates the length of the equation into eq_len
             compressed_minus = False  # resets the compressed_minus flag
@@ -185,7 +203,6 @@ def brackets_handler(brackets_str, opening_bracket_index):
     :return: the calculated equation inside the brackets
     """
     temp_str = brackets_str[opening_bracket_index:]  # puts the equation from the starting of the opening brackets
-
     opening = opening_bracket_index  # resets the opening bracket index
     counter = opening_bracket_index  # resets the counter
     ended_flag = False
@@ -199,7 +216,9 @@ def brackets_handler(brackets_str, opening_bracket_index):
                 # then update the opening index
                 opening = counter
             counter += 1
-    if ending - 1 == opening:  # if the brackets are empty then throw an error
+    if not ended_flag:
+        raise brackets_exception()
+    if ending == opening:  # if the brackets are empty then throw an error
         raise emptyBrackets_exception()
     if brackets_str[0] != '(':  # if the original equation doesnt start with opening brackets
         temp_str = brackets_str[opening + 1:ending]  # put in temp_str the equation in the brackets
@@ -235,14 +254,16 @@ def minus_reduction(start, eq, op1, string_index):
     if (end_minus_index - start_minus_index) % 2 != 0:  # checks if we got even or odd number of minuses
         if op1 == "":  # if there is even number of minuses and its not an operator
             eq = eq[:start_minus_index] + eq[end_minus_index + 1:]  # update the equation with the reduction
-            op1 = op1 + eq[0]  # update the left operand
+            if eq[0] != '(':
+                op1 = op1 + eq[0]  # update the left operand
         else:  # if there is even number of minuses and its an operator
             eq = eq[:start_minus_index] + '+' + eq[end_minus_index + 1:]  # update the equation with the reduction
             # and sign change
     else:
         if op1 == "":  # if there is odd number of minuses and its not an operator
             eq = eq[:start_minus_index + 1] + eq[end_minus_index + 1:]  # update the equation with the reduction
-            op1 = op1 + eq[0]  # update the left operand
+            if eq[0] != '(':
+                op1 = op1 + eq[0]  # update the left operand
         else:  # if there is odd number of minuses and its an operator
             eq = eq[:start_minus_index] + '-' + eq[end_minus_index + 1:]  # update the equation with the reduction
             # and sign change
@@ -252,7 +273,7 @@ def minus_reduction(start, eq, op1, string_index):
     return [eq, op1, string_index]
 
 
-def no_current_operator(current_char, op1, eq, op2_index, op2, string_index):
+def no_current_operator(current_char, op1, eq, op2_index, op2, string_index, compressed_minus):
     current_operator = ''
     found_operator = True
     if current_char == '-' and op1 == "":  # checks if we encounter a minus that is a number sign
@@ -276,4 +297,4 @@ def no_current_operator(current_char, op1, eq, op2_index, op2, string_index):
     else:  # if we didn't encounter a operator yet and its not a variation of minus then put it in current_operator
         current_operator = current_char
 
-    return [op1, eq, op2_index, found_operator, current_operator, string_index]
+    return [op1, eq, op2_index, found_operator, current_operator, string_index, compressed_minus]

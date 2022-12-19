@@ -19,12 +19,9 @@ def test_start_calculator():
                 has_operation - a flag that indicates if the current equation has an operator in it or not (this flag is used for exception checking)
                 has_content -  a flag that indicates if there is something other then operators in the equation
     """
-    # welcome_message()
-    # does_continue = True
-    # while does_continue:
+
     error_flag = False
     eq = ""
-    # print("please enter your equation bellow or enter 'quit' to quit\n")
     try:
         eq = input()  # getting the inputted equation to eq while checking for EOFError exception
     except EOFError:

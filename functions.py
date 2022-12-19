@@ -79,31 +79,35 @@ def operations(op1, op2, operator, eq):
         print(*return_list)
         show_specific_index_of_exception(eq, operator)
         return None
+    try:
 
-    if operator == "+":  # calls the operator function by the operator
-        return add(op1, op2)
-    if operator == "-":
-        return sub(op1, op2)
-    if operator == "*":
-        return mul(op1, op2)
-    if operator == "/":
-        return div(op1, op2)
-    if operator == "^":
-        return pow_override(op1, op2)
-    if operator == "%":
-        return mod(op1, op2)
-    if operator == "$":
-        return maximum(op1, op2)
-    if operator == "&":
-        return minimum(op1, op2)
-    if operator == "@":
-        return avg(op1, op2)
-    if operator == "~":
-        return neg(op2)
-    if operator == "!":
-        return factorial(op1)
-    if operator == "#":
-        return digit_sum(op1)
+        if operator == "+":  # calls the operator function by the operator
+            return add(op1, op2)
+        if operator == "-":
+            return sub(op1, op2)
+        if operator == "*":
+            return mul(op1, op2)
+        if operator == "/":
+            return div(op1, op2)
+        if operator == "^":
+            return pow_override(op1, op2)
+        if operator == "%":
+            return mod(op1, op2)
+        if operator == "$":
+            return maximum(op1, op2)
+        if operator == "&":
+            return minimum(op1, op2)
+        if operator == "@":
+            return avg(op1, op2)
+        if operator == "~":
+            return neg(op2)
+        if operator == "!":
+            return factorial(op1)
+        if operator == "#":
+            return digit_sum(op1)
+    except OverflowError as error:
+        print(error)
+        return None
 
 
 """
